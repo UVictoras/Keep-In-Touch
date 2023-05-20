@@ -2,6 +2,7 @@
 import pygame, sys
 import pygame.time
 import random as r
+from itertools import repeat
 
 #Init the pygame library
 pygame.init()
@@ -30,8 +31,16 @@ GAUGE = pygame.transform.scale(GAUGE, (1700, 100))
 BALL = pygame.image.load("img/ball.png")
 BALL = pygame.transform.scale(BALL, (30,30))
 
-def test():
-    pass
+def shake():
+    s = -1
+    for _ in range(0,3):
+        for x in range(0,20,5):
+            yield (x*s, 0)
+        for x in range(20, 0, 5):
+            yield (x*s, 0)
+        s *= -1
+    while True: 
+        yield (0,0)
 
 def get_font(size):
     return pygame.font.Font("asset/font.ttf", size)
@@ -132,11 +141,13 @@ def gameLoop():
     turn = 0
     gameStarted = False
 
+    offset = repeat((0,0))
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         pressedKeys = []
 
-        SCREEN.blit(BG, (0,0))
+        SCREEN.blit(BG, next(offset))
         SCREEN.blit(TIMERI, TIMERRECT)
         SCREEN.blit(timerCircle, timerCircleRect)
         SCREEN.blit(timerGlass, timerGlassRect)
@@ -215,7 +226,7 @@ def gameLoop():
                     userBall.move(2)     
 
             for lightPos in ballGauge.lightPos:
-                if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn > 10:
+                if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn >= 10:
                     if keys[pygame.K_m]:
                         if keys[pygame.K_w]:
                             ledList[ledId].turnedOn = True
@@ -246,6 +257,8 @@ def gameLoop():
                                 light4Img = ballGauge.lightImg
                             elif chosenLight == 5:
                                 light5Img = ballGauge.lightImg
+
+                            offset = shake()
             
             if keys[pygame.K_a]:
                 if chosenSwitch == 2:
@@ -318,7 +331,7 @@ def gameLoop():
         #timer -= 1
         ledTimer -= 1
 
-        if turn < 10:
+        if turn != 0 and turn < 10:
             turn += 1
 
         pygame.display.update()
