@@ -19,8 +19,9 @@ pygame.display.set_caption("MENU")
 BG = pygame.image.load("img/back.png")
 BG = pygame.transform.scale(BG, (1920, 1080))
 
-BUTTON = pygame.image.load("img/button.png")
-BUTTON = pygame.transform.scale(BUTTON, (BUTTON.get_width()/1.3, BUTTON.get_height()/1.3))
+TIMERI = pygame.image.load("img/timerbg.png")
+TIMERI = pygame.transform.scale(TIMERI, (TIMERI.get_width()/3, TIMERI.get_height()/3))
+TIMERRECT = TIMERI.get_rect(center=(960, 250))
 
 GAUGE = pygame.image.load("img/gauge.png")
 GAUGE = pygame.transform.scale(GAUGE, (1700, 100))
@@ -31,6 +32,8 @@ BALL = pygame.transform.scale(BALL, (30,30))
 def test():
     pass
 
+def get_font(size):
+    return pygame.font.Font("asset/font.ttf", size)
 
 def darken(image, percent = 50):
     newImg = image.copy()
@@ -43,6 +46,12 @@ def gameLoop():
     running = True
 
     timer = r.randint(60, 300)
+    timerCircle = pygame.image.load("img/timerCircle.png")
+    timerCircle = pygame.transform.scale(timerCircle, (60, 60))
+    timerCircleRect = timerCircle.get_rect(center=(1140,140))
+    timerGlass = pygame.image.load("img/timerglass.png")
+    timerGlass = pygame.transform.scale(timerGlass, (50, 50))
+    timerGlassRect = timerGlass.get_rect(center=(1140, 140))
 
     ballGauge = Gauge(960, 960, GAUGE)
     
@@ -63,7 +72,7 @@ def gameLoop():
     rotateButtonDown = pygame.transform.scale(rotateButtonDown, (100, 100))
 
     rotateButtonImg = rotateButtonUp
-    rotateButtonRect = rotateButtonImg.get_rect(center=(960, 400))
+    rotateButtonRect = rotateButtonImg.get_rect(center=(960, 500))
 
     chosenLight = ballGauge.chooseLight()
 
@@ -77,12 +86,15 @@ def gameLoop():
         light4Img = ballGauge.lightImg
     elif chosenLight == 5:
         light5Img = ballGauge.lightImg
-       
-    mainButton = Button(960, 250, BUTTON, test)
+
+    switchOn = pygame.image.load("img/switchOn.png")
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         SCREEN.blit(BG, (0,0))
-        SCREEN.blit(mainButton.image, mainButton.rect)
+        SCREEN.blit(TIMERI, TIMERRECT)
+        SCREEN.blit(timerCircle, timerCircleRect)
+        SCREEN.blit(timerGlass, timerGlassRect)
         SCREEN.blit(ballGauge.image, ballGauge.rect)
         SCREEN.blit(userBall.image, userBall.rect)
         SCREEN.blit(rotateButtonImg, rotateButtonRect)
@@ -94,6 +106,7 @@ def gameLoop():
         SCREEN.blit(light5Img, ballGauge.light5Rect)
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
+        
 
         clock = pygame.time.Clock()
 
@@ -111,8 +124,7 @@ def gameLoop():
                     if rotateButtonImg == rotateButtonDown:
                         rotateButtonImg = rotateButtonUp
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if mainButton.checkForInput(MENU_MOUSE_POS):
-                    print("good")
+                print(MENU_MOUSE_POS)
         if keys[pygame.K_w]:
             if userBall.x < ballGauge.rect.right-130:
                 userBall.move(1)
