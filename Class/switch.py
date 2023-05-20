@@ -15,8 +15,10 @@ class Switch ():
         self.possibleState = ["On","Off"]
         self.state = r.choice(self.possibleState)
 
-    def switch(self):
+    def switch(self, onImg, offImg):
         if self.state == "On":
             self.state = "Off"
+            self.image = offImg
         elif self.state == "Off":
             self.state = "On"
+            self.image = onImg
