@@ -7,7 +7,6 @@ import random as r
 pygame.init()
 
 #Import Classes
-from Class.button import Button
 from Class.ball import Ball
 from Class.gauge import Gauge
 from Class.switch import Switch
@@ -110,7 +109,15 @@ def gameLoop():
 
     chosenSwitch = 0
 
-    LED = []
+    ledOn = pygame.image.load("img/ledon.png")
+    ledOn = pygame.transform.scale(ledOn, (50,50))
+    ledOff = pygame.image.load("img/ledoff.png")
+    ledOff = pygame.transform.scale(ledOff, (50,50))
+    ledRect = ledOn.get_rect(center=(0,0))
+
+    ledList = [False, False, False, False, False]
+
+    ledId = 0
 
     while running and timer > 0:
         keys = pygame.key.get_pressed()
@@ -127,6 +134,13 @@ def gameLoop():
         for switch in switchList:
             SCREEN.blit(switch.image, switch.rect)
 
+        for i in range(len(ledList)):
+            ledRect = ledOn.get_rect(center=(755+126*i, 30))
+            if ledList[i] == False:      
+                SCREEN.blit(ledOff, ledRect)
+            else:
+                SCREEN.blit(ledOn, ledRect)
+
         SCREEN.blit(light1Img, ballGauge.light1Rect)
         SCREEN.blit(light2Img, ballGauge.light2Rect)
         SCREEN.blit(light3Img, ballGauge.light3Rect)
@@ -135,7 +149,7 @@ def gameLoop():
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
         
-        if len(LED) == 5:
+        if len(ledList) == 5 and ledList[-1] == True:
             winRect = pygame.Surface((1920,1080))
             winRect.set_alpha(128)
             winRect.fill((0,0,0))
@@ -145,12 +159,13 @@ def gameLoop():
             winTextRect = winText.get_rect(center=(960,100))
             SCREEN.blit(winText, winTextRect)
             winTime = 60
-
-            while True:
+            win = True
+            while win:
                 pygame.display.flip()
                 winTime -= 1
 
                 if winTime == 0:
+                    win = False
                     running = False
 
         clock = pygame.time.Clock()
@@ -181,7 +196,8 @@ def gameLoop():
             if userBall.x in range(lightPos.left, lightPos.right):
                 if keys[pygame.K_m]:
                     if keys[pygame.K_w]:
-                        LED.append(True)
+                        ledList[ledId] = True
+                        ledId += 1
         
         if keys[pygame.K_a]:
             if chosenSwitch == 2:
@@ -254,7 +270,7 @@ def gameLoop():
         #timer -= 1
 
         pygame.display.update()
-    if len(LED) == 5:
+    if len(ledList) == 5:
         print("win")
         
     pygame.quit()
