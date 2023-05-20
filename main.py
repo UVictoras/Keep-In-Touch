@@ -10,6 +10,7 @@ pygame.init()
 from Class.button import Button
 from Class.ball import Ball
 from Class.gauge import Gauge
+from Class.switch import Switch
 
 #Create game screen
 SCREEN = pygame.display.set_mode((1920,1080))
@@ -52,6 +53,10 @@ def gameLoop():
     timerGlass = pygame.image.load("img/timerglass.png")
     timerGlass = pygame.transform.scale(timerGlass, (50, 50))
     timerGlassRect = timerGlass.get_rect(center=(1140, 140))
+    timerText = "18:04\n"
+    timerTextSurface = []
+    for line in timerText.split('\n'):
+        timerTextSurface.append(get_font(100).render(line, True, "#ffffff"))
 
     ballGauge = Gauge(960, 960, GAUGE)
     
@@ -88,6 +93,20 @@ def gameLoop():
         light5Img = ballGauge.lightImg
 
     switchOn = pygame.image.load("img/switchOn.png")
+    switchOn = pygame.transform.scale(switchOn, (40, 100))
+    switchOff = pygame.image.load("img/switchOff.png")
+    switchOff = pygame.transform.scale(switchOff, (40, 100))
+
+    switch1 = Switch(735, 655, switchOn)
+    switch2 = Switch(807, 655, switchOn)
+    switch3 = Switch(879, 655, switchOn)
+    switch4 = Switch(941, 655, switchOn)
+    switch5 = Switch(1013, 655, switchOn)
+    switchList = [switch1, switch2, switch3, switch4, switch5]
+
+    for switch in switchList:
+        if switch.state == "Off":
+            switch.image = switchOff
 
     while running and timer > 0:
         keys = pygame.key.get_pressed()
@@ -98,6 +117,11 @@ def gameLoop():
         SCREEN.blit(ballGauge.image, ballGauge.rect)
         SCREEN.blit(userBall.image, userBall.rect)
         SCREEN.blit(rotateButtonImg, rotateButtonRect)
+        for text in timerTextSurface:
+            SCREEN.blit(text, text.get_rect(center=(950,270)))
+
+        for switch in switchList:
+            SCREEN.blit(switch.image, switch.rect)
 
         SCREEN.blit(light1Img, ballGauge.light1Rect)
         SCREEN.blit(light2Img, ballGauge.light2Rect)
