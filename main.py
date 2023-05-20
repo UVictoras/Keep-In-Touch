@@ -147,6 +147,9 @@ def gameLoop():
     noHoldTimer = 3000
     outTimer = 3000
 
+    menuMusic = pygame.mixer.Sound("sound/background-music.mp3")
+    menuMusic.set_volume(0.2)
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         pressedKeys = []
@@ -191,6 +194,7 @@ def gameLoop():
                 winTime -= 1
 
                 if winTime == 0:
+                    menuMusic.stop()
                     win = False
                     running = False
 
@@ -209,6 +213,7 @@ def gameLoop():
                 loseTime -= 1
 
                 if loseTime == 0:
+                    menuMusic.stop()
                     lose = False
                     running = False
 
@@ -217,6 +222,7 @@ def gameLoop():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    menuMusic.stop()
                     running = False
                 if event.key == pygame.K_p:
                     if rotateButtonImg == rotateButtonUp:
@@ -243,6 +249,9 @@ def gameLoop():
             turn += 1
 
         if gameStarted:
+            if menuMusic.get_num_channels() == 0:
+                menuMusic.play(-1)
+
             if keys[pygame.K_w]:
                 if userBall.x < ballGauge.rect.right-130:
                     userBall.move(1)
