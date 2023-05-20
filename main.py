@@ -143,6 +143,10 @@ def gameLoop():
 
     offset = repeat((0,0))
 
+    lose = False
+    noHoldTimer = 3000
+    outTimer = 3000
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         pressedKeys = []
@@ -190,6 +194,24 @@ def gameLoop():
                     win = False
                     running = False
 
+        if lose:
+            loseRect = pygame.Surface((1920, 1080))
+            loseRect.set_alpha(128)
+            loseRect.fill((0,0,0))
+            SCREEN.blit(loseRect, (0,0))
+
+            loseText = get_font(100).render("BETTER LUCK NEXT TIME...", True, "#b68f40")
+            loseTextRect = loseText.get_rect(center=(960,100))
+            SCREEN.blit(loseText, loseTextRect)
+            loseTime = 100
+            while lose:
+                pygame.display.flip()
+                loseTime -= 1
+
+                if loseTime == 0:
+                    lose = False
+                    running = False
+
         clock = pygame.time.Clock()
 
         for event in pygame.event.get():
@@ -213,7 +235,6 @@ def gameLoop():
                 print(MENU_MOUSE_POS)      
 
         if turn == 0 and (pressedKeys == startGame or pressedKeys == startGameInv):
-            print("in it")
             gameStarted = True
             turn += 1
 
@@ -221,9 +242,13 @@ def gameLoop():
             if keys[pygame.K_w]:
                 if userBall.x < ballGauge.rect.right-130:
                     userBall.move(1)
+                if noHoldTimer != 3000:
+                    noHoldTimer = 3000
             if keys[pygame.K_m]:
                 if userBall.x > ballGauge.rect.left+160:
-                    userBall.move(2)     
+                    userBall.move(2)  
+                if noHoldTimer != 3000:
+                    noHoldTimer = 3000   
 
             for lightPos in ballGauge.lightPos:
                 if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn >= 10:
@@ -259,7 +284,16 @@ def gameLoop():
                                 light5Img = ballGauge.lightImg
 
                             offset = shake()
+                elif userBall.x == ballGauge.rect.left or userBall.x == ballGauge.rect.right:
+                    if outTimer == 0:
+                        lose = True
+                    outTimer -= 1
             
+            if turn >= 10 and (pygame.K_m not in keys and pygame.K_w not in keys):
+                if noHoldTimer == 0:
+                    lose = True
+                noHoldTimer -= 1
+
             if keys[pygame.K_a]:
                 if chosenSwitch == 2:
                     switch2.image = pygame.transform.scale(switch2.image, (40, 100))
@@ -330,6 +364,12 @@ def gameLoop():
 
         #timer -= 1
         ledTimer -= 1
+
+        if timer == 0:
+            lose = True
+
+        elif userBall.x > ballGauge.rect.left and userBall.x < ballGauge.rect.right and outTimer != 3000:
+            outTimer = 3000
 
         if turn != 0 and turn < 10:
             turn += 1
