@@ -9,6 +9,7 @@ pygame.init()
 #Import Classes
 from Class.ball import Ball
 from Class.gauge import Gauge
+from Class.led import Led
 from Class.switch import Switch
 
 #Create game screen
@@ -97,9 +98,9 @@ def gameLoop():
     switchOff = pygame.transform.scale(switchOff, (40, 100))
 
     switch1 = Switch(735, 655, switchOn)
-    switch2 = Switch(841, 655, switchOn)
-    switch3 = Switch(957, 655, switchOn)
-    switch4 = Switch(1063, 655, switchOn)
+    switch2 = Switch(851, 655, switchOn)
+    switch3 = Switch(967, 655, switchOn)
+    switch4 = Switch(1073, 655, switchOn)
     switch5 = Switch(1200, 655, switchOn)
     switchList = [switch1, switch2, switch3, switch4, switch5]
 
@@ -110,17 +111,31 @@ def gameLoop():
     chosenSwitch = 0
 
     ledOn = pygame.image.load("img/ledon.png")
-    ledOn = pygame.transform.scale(ledOn, (50,50))
+    ledOn = pygame.transform.scale(ledOn, (30,30))
     ledOff = pygame.image.load("img/ledoff.png")
-    ledOff = pygame.transform.scale(ledOff, (50,50))
-    ledRect = ledOn.get_rect(center=(0,0))
+    ledOff = pygame.transform.scale(ledOff, (30,30))
 
-    ledList = [False, False, False, False, False]
+    led1 = Led(755, 90, ledOff)
+    led2 = Led(851, 90, ledOff)
+    led3 = Led(967, 90, ledOff)
+    led4 = Led(1073, 90, ledOff)
+    led5 = Led(1200, 90, ledOff)
+
+    ledList = [led1, led2, led3, led4, led5]
 
     ledId = 0
+    ledTimer = 0
+
+    startGame = [pygame.K_m, pygame.K_w]
+    startGameInv = [pygame.K_w, pygame.K_m]
+
+    turn = 0
+    gameStarted = False
 
     while running and timer > 0:
         keys = pygame.key.get_pressed()
+        pressedKeys = []
+
         SCREEN.blit(BG, (0,0))
         SCREEN.blit(TIMERI, TIMERRECT)
         SCREEN.blit(timerCircle, timerCircleRect)
@@ -134,12 +149,8 @@ def gameLoop():
         for switch in switchList:
             SCREEN.blit(switch.image, switch.rect)
 
-        for i in range(len(ledList)):
-            ledRect = ledOn.get_rect(center=(755+126*i, 30))
-            if ledList[i] == False:      
-                SCREEN.blit(ledOff, ledRect)
-            else:
-                SCREEN.blit(ledOn, ledRect)
+        for led in ledList:
+            SCREEN.blit(led.image, led.rect)
 
         SCREEN.blit(light1Img, ballGauge.light1Rect)
         SCREEN.blit(light2Img, ballGauge.light2Rect)
@@ -149,7 +160,7 @@ def gameLoop():
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
         
-        if len(ledList) == 5 and ledList[-1] == True:
+        if ledList[-1].turnedOn == True:
             winRect = pygame.Surface((1920,1080))
             winRect.set_alpha(128)
             winRect.fill((0,0,0))
@@ -183,95 +194,134 @@ def gameLoop():
                 if event.key == pygame.K_i:
                     if rotateButtonImg == rotateButtonDown:
                         rotateButtonImg = rotateButtonUp
+                if event.key == pygame.K_m:
+                    pressedKeys.append(pygame.K_m)
+                if event.key == pygame.K_w:
+                    pressedKeys.append(pygame.K_w)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print(MENU_MOUSE_POS)
-        if keys[pygame.K_w]:
-            if userBall.x < ballGauge.rect.right-130:
-                userBall.move(1)
-        if keys[pygame.K_m]:
-            if userBall.x > ballGauge.rect.left+160:
-                userBall.move(2)           
+                print(MENU_MOUSE_POS)      
 
-        for lightPos in ballGauge.lightPos:
-            if userBall.x in range(lightPos.left, lightPos.right):
-                if keys[pygame.K_m]:
-                    if keys[pygame.K_w]:
-                        ledList[ledId] = True
-                        ledId += 1
-        
-        if keys[pygame.K_a]:
-            if chosenSwitch == 2:
-                switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-            elif chosenSwitch == 3:
-                switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-            elif chosenSwitch == 4:
-                switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-            elif chosenSwitch == 5:
-                switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-            chosenSwitch = 1
-            switch1.image = pygame.transform.scale(switch1.image, (60, 120))
-        if keys[pygame.K_z]:
-            if chosenSwitch == 1:
-                switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-            elif chosenSwitch == 3:
-                switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-            elif chosenSwitch == 4:
-                switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-            elif chosenSwitch == 5:
-                switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-            chosenSwitch = 2
-            switch2.image = pygame.transform.scale(switch2.image, (60, 120))
-        if keys[pygame.K_e]:
-            if chosenSwitch == 1:
-                switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-            elif chosenSwitch == 2:
-                switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-            elif chosenSwitch == 4:
-                switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-            elif chosenSwitch == 5:
-                switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-            chosenSwitch = 3
-            switch3.image = pygame.transform.scale(switch3.image, (60, 120)) 
-        if keys[pygame.K_r]:
-            if chosenSwitch == 1:
-                switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-            elif chosenSwitch == 2:
-                switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-            elif chosenSwitch == 3:
-                switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-            elif chosenSwitch == 5:
-                switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-            chosenSwitch = 4
-            switch4.image = pygame.transform.scale(switch4.image, (60, 120))
-        if keys[pygame.K_t]:
-            if chosenSwitch == 1:
-                switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-            elif chosenSwitch == 2:
-                switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-            elif chosenSwitch == 3:
-                switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-            elif chosenSwitch == 4:
-                switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-            chosenSwitch = 5
-            switch5.image = pygame.transform.scale(switch5.image, (60, 120))
+        if turn == 0 and (pressedKeys == startGame or pressedKeys == startGameInv):
+            print("in it")
+            gameStarted = True
+            turn += 1
 
-        if keys[pygame.K_TAB]:
-            if chosenSwitch == 1:
-                switch1.switch(switchOn, switchOff)
-            elif chosenSwitch == 2:
-                switch2.switch(switchOn, switchOff)
-            elif chosenSwitch == 3:
-                switch3.switch(switchOn, switchOff)
-            elif chosenSwitch == 4:
-                switch4.switch(switchOn, switchOff)
-            elif chosenSwitch == 5:
-                switch5.switch(switchOn, switchOff)
+        if gameStarted:
+            if keys[pygame.K_w]:
+                if userBall.x < ballGauge.rect.right-130:
+                    userBall.move(1)
+            if keys[pygame.K_m]:
+                if userBall.x > ballGauge.rect.left+160:
+                    userBall.move(2)     
+
+            for lightPos in ballGauge.lightPos:
+                if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn > 10:
+                    if keys[pygame.K_m]:
+                        if keys[pygame.K_w]:
+                            ledList[ledId].turnedOn = True
+                            ledList[ledId].image = ledOn
+                            ledId += 1
+                            ledTimer = 100
+
+                            if chosenLight == 1:
+                                light1Img = darkenLight
+                            elif chosenLight == 2:
+                                light2Img = darkenLight
+                            elif chosenLight == 3:
+                                light3Img = darkenLight
+                            elif chosenLight == 4:
+                                light4Img = darkenLight
+                            elif chosenLight == 5:
+                                light5Img = darkenLight
+
+                            chosenLight = ballGauge.chooseLight()
+
+                            if chosenLight == 1:
+                                light1Img = ballGauge.lightImg
+                            elif chosenLight == 2:
+                                light2Img = ballGauge.lightImg
+                            elif chosenLight == 3:
+                                light3Img = ballGauge.lightImg
+                            elif chosenLight == 4:
+                                light4Img = ballGauge.lightImg
+                            elif chosenLight == 5:
+                                light5Img = ballGauge.lightImg
+            
+            if keys[pygame.K_a]:
+                if chosenSwitch == 2:
+                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
+                elif chosenSwitch == 3:
+                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
+                elif chosenSwitch == 4:
+                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
+                elif chosenSwitch == 5:
+                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
+                chosenSwitch = 1
+                switch1.image = pygame.transform.scale(switch1.image, (60, 120))
+            if keys[pygame.K_z]:
+                if chosenSwitch == 1:
+                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
+                elif chosenSwitch == 3:
+                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
+                elif chosenSwitch == 4:
+                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
+                elif chosenSwitch == 5:
+                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
+                chosenSwitch = 2
+                switch2.image = pygame.transform.scale(switch2.image, (60, 120))
+            if keys[pygame.K_e]:
+                if chosenSwitch == 1:
+                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
+                elif chosenSwitch == 2:
+                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
+                elif chosenSwitch == 4:
+                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
+                elif chosenSwitch == 5:
+                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
+                chosenSwitch = 3
+                switch3.image = pygame.transform.scale(switch3.image, (60, 120)) 
+            if keys[pygame.K_r]:
+                if chosenSwitch == 1:
+                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
+                elif chosenSwitch == 2:
+                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
+                elif chosenSwitch == 3:
+                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
+                elif chosenSwitch == 5:
+                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
+                chosenSwitch = 4
+                switch4.image = pygame.transform.scale(switch4.image, (60, 120))
+            if keys[pygame.K_t]:
+                if chosenSwitch == 1:
+                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
+                elif chosenSwitch == 2:
+                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
+                elif chosenSwitch == 3:
+                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
+                elif chosenSwitch == 4:
+                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
+                chosenSwitch = 5
+                switch5.image = pygame.transform.scale(switch5.image, (60, 120))
+
+            if keys[pygame.K_TAB]:
+                if chosenSwitch == 1:
+                    switch1.switch(switchOn, switchOff)
+                elif chosenSwitch == 2:
+                    switch2.switch(switchOn, switchOff)
+                elif chosenSwitch == 3:
+                    switch3.switch(switchOn, switchOff)
+                elif chosenSwitch == 4:
+                    switch4.switch(switchOn, switchOff)
+                elif chosenSwitch == 5:
+                    switch5.switch(switchOn, switchOff)
 
         #timer -= 1
+        ledTimer -= 1
+
+        if turn < 10:
+            turn += 1
 
         pygame.display.update()
-    if len(ledList) == 5:
-        print("win")
         
     pygame.quit()
     sys.exit()

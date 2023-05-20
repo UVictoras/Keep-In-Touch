@@ -10,7 +10,7 @@ class Ball ():
 
     def move(self, id):
         if id == 1:
-            self.x += 10
+            self.x += 2.5
         else:
-            self.x -= 10
+            self.x -= 2.5
         self.rect = self.image.get_rect(center=(self.x, self.y))
