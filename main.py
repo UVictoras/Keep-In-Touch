@@ -110,6 +110,8 @@ def gameLoop():
 
     chosenSwitch = 0
 
+    LED = []
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         SCREEN.blit(BG, (0,0))
@@ -133,6 +135,23 @@ def gameLoop():
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
         
+        if len(LED) == 5:
+            winRect = pygame.Surface((1920,1080))
+            winRect.set_alpha(128)
+            winRect.fill((0,0,0))
+            SCREEN.blit(winRect, (0,0))
+
+            winText = get_font(100).render("YOU WIN", True, "#b68f40")
+            winTextRect = winText.get_rect(center=(960,100))
+            SCREEN.blit(winText, winTextRect)
+            winTime = 60
+
+            while True:
+                pygame.display.flip()
+                winTime -= 1
+
+                if winTime == 0:
+                    running = False
 
         clock = pygame.time.Clock()
 
@@ -157,7 +176,13 @@ def gameLoop():
         if keys[pygame.K_m]:
             if userBall.x > ballGauge.rect.left+160:
                 userBall.move(2)           
-                
+
+        for lightPos in ballGauge.lightPos:
+            if userBall.x in range(lightPos.left, lightPos.right):
+                if keys[pygame.K_m]:
+                    if keys[pygame.K_w]:
+                        LED.append(True)
+        
         if keys[pygame.K_a]:
             if chosenSwitch == 2:
                 switch2.image = pygame.transform.scale(switch2.image, (40, 100))
@@ -229,6 +254,8 @@ def gameLoop():
         #timer -= 1
 
         pygame.display.update()
+    if len(LED) == 5:
+        print("win")
         
     pygame.quit()
     sys.exit()

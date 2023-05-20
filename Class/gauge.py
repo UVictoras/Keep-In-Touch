@@ -17,13 +17,15 @@ class Gauge():
         self.light4Pos = (self.light3Pos[0] + (self.rect.right-self.rect.left)/6, self.rect.top-50)
         self.light5Pos = (self.light4Pos[0] + (self.rect.right-self.rect.left)/6, self.rect.top-50)
         self.lightImg = pygame.image.load("img/light.png")
-        self.lightImg = pygame.transform.scale(self.lightImg, (10, 250))
+        self.lightImg = pygame.transform.scale(self.lightImg, (30, 250))
 
         self.light1Rect = self.lightImg.get_rect(center=self.light1Pos)
         self.light2Rect = self.lightImg.get_rect(center=self.light2Pos)
         self.light3Rect = self.lightImg.get_rect(center=self.light3Pos)
         self.light4Rect = self.lightImg.get_rect(center=self.light4Pos)
         self.light5Rect = self.lightImg.get_rect(center=self.light5Pos)
+
+        self.lightPos = [self.light1Rect, self.light2Rect, self.light3Rect, self.light4Rect, self.light5Rect]
 
         self.ligthen = 0
 
