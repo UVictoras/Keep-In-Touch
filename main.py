@@ -229,8 +229,12 @@ def gameLoop():
                         rotateButtonImg = rotateButtonUp
                 if event.key == pygame.K_m:
                     pressedKeys.append(pygame.K_m)
+                    if noHoldTimer != 3000:
+                        noHoldTimer = 3000  
                 if event.key == pygame.K_w:
                     pressedKeys.append(pygame.K_w)
+                    if noHoldTimer != 3000:
+                        noHoldTimer = 3000
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print(MENU_MOUSE_POS)      
 
@@ -242,13 +246,9 @@ def gameLoop():
             if keys[pygame.K_w]:
                 if userBall.x < ballGauge.rect.right-130:
                     userBall.move(1)
-                if noHoldTimer != 3000:
-                    noHoldTimer = 3000
             if keys[pygame.K_m]:
                 if userBall.x > ballGauge.rect.left+160:
-                    userBall.move(2)  
-                if noHoldTimer != 3000:
-                    noHoldTimer = 3000   
+                    userBall.move(2)   
 
             for lightPos in ballGauge.lightPos:
                 if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn >= 10:
