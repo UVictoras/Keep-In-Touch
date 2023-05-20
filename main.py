@@ -30,12 +30,17 @@ def gameLoop():
         SCREEN.blit(BG, (0,0))
         SCREEN.blit(mainButton.image, mainButton.rect)
 
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     pygame.quit()
                     sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if mainButton.checkForInput(MENU_MOUSE_POS):
+                    print("good")
 
         pygame.display.update()
 
