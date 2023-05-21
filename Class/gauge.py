@@ -5,11 +5,12 @@ pygame.init()
 
 class Gauge():
 
-    def __init__(self, x, y, image):
+    def __init__(self, x, y, image, other):
         self.x = x
         self.y = y
         self.image = image
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.other = other
+        self.rect = self.other.get_rect(center=(self.x, self.y))
 
         self.light1Pos = (self.rect.left + (self.rect.right-self.rect.left)/6, self.rect.top-50)
         self.light2Pos = (self.light1Pos[0] + (self.rect.right-self.rect.left)/6, self.rect.top-50)

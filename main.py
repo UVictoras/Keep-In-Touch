@@ -21,9 +21,8 @@ pygame.display.set_caption("MENU")
 BG = pygame.image.load("img/back.png")
 BG = pygame.transform.scale(BG, (1920, 1080))
 
-TIMERI = pygame.image.load("img/timerbg.png")
-TIMERI = pygame.transform.scale(TIMERI, (TIMERI.get_width()/3, TIMERI.get_height()/3))
-TIMERRECT = TIMERI.get_rect(center=(960, 250))
+TIMERI = pygame.image.load("img/timer/timerbg.png")
+TIMERI = pygame.transform.scale(TIMERI, (1920, 1080))
 
 GAUGE = pygame.image.load("img/gauge.png")
 GAUGE = pygame.transform.scale(GAUGE, (1700, 100))
@@ -56,20 +55,24 @@ def gameLoop():
     running = True
 
     timer = r.randint(60, 300)
-    timerCircle = pygame.image.load("img/timerCircle.png")
-    timerCircle = pygame.transform.scale(timerCircle, (60, 60))
-    timerCircleRect = timerCircle.get_rect(center=(1140,140))
-    timerGlass = pygame.image.load("img/timerglass.png")
-    timerGlass = pygame.transform.scale(timerGlass, (50, 50))
-    timerGlassRect = timerGlass.get_rect(center=(1140, 140))
+    timerCircle = pygame.image.load("img/timer/timercircle.png")
+    timerCircle = pygame.transform.scale(timerCircle, (1920, 1080))
+    timerGlass = pygame.image.load("img/timer/timerglass.png")
+    timerGlass = pygame.transform.scale(timerGlass, (1920, 1080))
     timerText = "18:04\n"
     timerTextSurface = []
     for line in timerText.split('\n'):
         timerTextSurface.append(get_font(100).render(line, True, "#ffffff"))
 
-    ballGauge = Gauge(960, 960, GAUGE)
+    reGauge = pygame.image.load("img/gauge/gauge.png")
+    reGauge = pygame.transform.scale(reGauge, (1920, 1080))
+
+    reBall = pygame.image.load("img/gauge/ball.png")
+    reBall = pygame.transform.scale(reBall, (1920, 1080))
+
+    ballGauge = Gauge(960, 960, reGauge, GAUGE)
     
-    userBall = Ball(960, 967, BALL)
+    userBall = Ball(960, 540, reBall)
 
     darkenLight = darken(ballGauge.lightImg)
     light1Img = darkenLight
@@ -101,36 +104,77 @@ def gameLoop():
     elif chosenLight == 5:
         light5Img = ballGauge.lightImg
 
-    switchOn = pygame.image.load("img/switchOn.png")
-    switchOn = pygame.transform.scale(switchOn, (40, 100))
-    switchOff = pygame.image.load("img/switchOff.png")
-    switchOff = pygame.transform.scale(switchOff, (40, 100))
+    switch1On = pygame.image.load("img/switch/blue/switch1.png")
+    switch1On = pygame.transform.scale(switch1On, (1920, 1080))
+    switch1Off = pygame.image.load("img/switch/yellow/switch1.png")
+    switch1Off = pygame.transform.scale(switch1Off, (1920, 1080))
 
-    switch1 = Switch(735, 655, switchOn)
-    switch2 = Switch(851, 655, switchOn)
-    switch3 = Switch(967, 655, switchOn)
-    switch4 = Switch(1073, 655, switchOn)
-    switch5 = Switch(1200, 655, switchOn)
+    switch2On = pygame.image.load("img/switch/blue/switch2.png")
+    switch2On = pygame.transform.scale(switch2On, (1920, 1080))
+    switch2Off = pygame.image.load("img/switch/yellow/switch2.png")
+    switch2Off = pygame.transform.scale(switch2Off, (1920, 1080))
+
+    switch3On = pygame.image.load("img/switch/blue/switch3.png")
+    switch3On = pygame.transform.scale(switch3On, (1920, 1080))
+    switch3Off = pygame.image.load("img/switch/yellow/switch3.png")
+    switch3Off = pygame.transform.scale(switch3Off, (1920, 1080))
+
+    switch4On = pygame.image.load("img/switch/blue/switch4.png")
+    switch4On = pygame.transform.scale(switch4On, (1920, 1080))
+    switch4Off = pygame.image.load("img/switch/yellow/switch4.png")
+    switch4Off = pygame.transform.scale(switch4Off, (1920, 1080))
+    
+    switch5On = pygame.image.load("img/switch/blue/switch5.png")
+    switch5On = pygame.transform.scale(switch5On, (1920, 1080))
+    switch5Off = pygame.image.load("img/switch/yellow/switch5.png")
+    switch5Off = pygame.transform.scale(switch5Off, (1920, 1080))
+
+    switch1 = Switch(735, 655, switch1On)
+    switch2 = Switch(851, 655, switch2On)
+    switch3 = Switch(967, 655, switch3On)
+    switch4 = Switch(1073, 655, switch4On)
+    switch5 = Switch(1200, 655, switch5On)
     switchList = [switch1, switch2, switch3, switch4, switch5]
+    switchOffList = [switch1Off, switch2Off, switch3Off, switch4Off, switch5Off]
 
-    for switch in switchList:
-        if switch.state == "Off":
-            switch.image = switchOff
+    for i in range(len(switchList)):
+        if switchList[i].state == "Off":
+            switchList[i].image = switchOffList[i]
 
+    switchListState = [switch1.state, switch2.state, switch3.state, switch4.state, switch5.state]
+    solutionSwitch =["Off","On","Off","Off","On"]
     chosenSwitch = 1
-    switch1.image = pygame.transform.scale(switch1.image, (60, 120))
-    switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
 
-    ledOn = pygame.image.load("img/ledon.png")
-    ledOn = pygame.transform.scale(ledOn, (30,30))
-    ledOff = pygame.image.load("img/ledoff.png")
-    ledOff = pygame.transform.scale(ledOff, (30,30))
+    led1On = pygame.image.load("img/led/on/led1.png")
+    led1On = pygame.transform.scale(led1On, (1920,1080))
+    led1Off = pygame.image.load("img/led/off/led1.png")
+    led1Off = pygame.transform.scale(led1Off, (1920,1080))
 
-    led1 = Led(755, 90, ledOff)
-    led2 = Led(851, 90, ledOff)
-    led3 = Led(967, 90, ledOff)
-    led4 = Led(1073, 90, ledOff)
-    led5 = Led(1200, 90, ledOff)
+    led2On = pygame.image.load("img/led/on/led2.png")
+    led2On = pygame.transform.scale(led2On, (1920,1080))
+    led2Off = pygame.image.load("img/led/off/led2.png")
+    led2Off = pygame.transform.scale(led2Off, (1920, 1080))
+
+    led3On = pygame.image.load("img/led/on/led3.png")
+    led3On = pygame.transform.scale(led3On, (1920,1080))
+    led3Off = pygame.image.load("img/led/off/led3.png")
+    led3Off = pygame.transform.scale(led3Off, (1920,1080))
+
+    led4On = pygame.image.load("img/led/on/led4.png")
+    led4On = pygame.transform.scale(led4On, (1920,1080))
+    led4Off = pygame.image.load("img/led/off/led4.png")
+    led4Off = pygame.transform.scale(led4Off, (1920,1080))
+
+    led5On = pygame.image.load("img/led/on/led5.png")
+    led5On = pygame.transform.scale(led5On, (1920,1080))
+    led5Off = pygame.image.load("img/led/off/led5.png")
+    led5Off = pygame.transform.scale(led5Off, (1920,1080))
+
+    led1 = Led(755, 90, led1Off, led1On)
+    led2 = Led(851, 90, led2Off, led2On)
+    led3 = Led(967, 90, led3Off, led3On)
+    led4 = Led(1073, 90, led4Off, led4On)
+    led5 = Led(1200, 90, led5Off, led5On)
 
     ledList = [led1, led2, led3, led4, led5]
 
@@ -152,31 +196,162 @@ def gameLoop():
     menuMusic = pygame.mixer.Sound("sound/background-music.mp3")
     menuMusic.set_volume(0.2)
 
+    switchSE = pygame.mixer.Sound("sound/effect/Button_Switch.wav")
+    switchSE.set_volume(0.2)
+
+    ledSE = pygame.mixer.Sound("sound/effect/LED_is_Activate.wav")
+    ledSE.set_volume(0.2)
+
+    lockedBoxImg = pygame.image.load("img/box/locked/lockedbox.png")
+    lockedBoxImg = pygame.transform.scale(lockedBoxImg, (1920, 1080))
+    lockedBoxText = pygame.image.load("img/box/locked/lockedtxt.png")
+    lockedBoxText = pygame.transform.scale(lockedBoxText, (1920, 1080))
+
+    mysteryOff = pygame.image.load("img/mystery/off.png")
+    mysteryOff = pygame.transform.scale(mysteryOff, (1920, 1080))
+
+    randomButton1 = pygame.image.load("img/randoms/blue.png")
+    randomButton1 = pygame.transform.scale(randomButton1, (1920, 1080))
+    randomButton2 = pygame.image.load("img/randoms/purple.png")
+    randomButton2 = pygame.transform.scale(randomButton2, (1920, 1080))
+    randomButton3 = pygame.image.load("img/randoms/pink.png")
+    randomButton3 = pygame.transform.scale(randomButton3, (1920, 1080)) 
+
+    trioGaugeBackGround = pygame.image.load("img/trio/gauge-background.png")
+    trioGaugeBackGround = pygame.transform.scale(trioGaugeBackGround, (1920, 1080))
+
+    gaugeBlue1Off = pygame.image.load("img/trio/blue/off/gauge1.png")
+    gaugeBlue1Off = pygame.transform.scale(gaugeBlue1Off, (1920, 1080))
+    gaugeBlue2Off = pygame.image.load("img/trio/blue/off/gauge2.png")
+    gaugeBlue2Off = pygame.transform.scale(gaugeBlue2Off, (1920, 1080))
+    gaugeBlue3Off = pygame.image.load("img/trio/blue/off/gauge3.png")
+    gaugeBlue3Off = pygame.transform.scale(gaugeBlue3Off, (1920, 1080))
+    gaugeBlue4Off = pygame.image.load("img/trio/blue/off/gauge4.png")
+    gaugeBlue4Off = pygame.transform.scale(gaugeBlue4Off, (1920, 1080))
+    gaugeBlue5Off = pygame.image.load("img/trio/blue/off/gauge5.png")
+    gaugeBlue5Off = pygame.transform.scale(gaugeBlue5Off, (1920, 1080))
+    gaugeBlueList = [gaugeBlue1Off, gaugeBlue2Off, gaugeBlue3Off, gaugeBlue4Off, gaugeBlue5Off]
+
+    gaugeYellow1Off = pygame.image.load("img/trio/yellow/off/gauge1.png")
+    gaugeYellow1Off = pygame.transform.scale(gaugeYellow1Off, (1920, 1080))
+    gaugeYellow2Off = pygame.image.load("img/trio/yellow/off/gauge2.png")
+    gaugeYellow2Off = pygame.transform.scale(gaugeYellow2Off, (1920, 1080))
+    gaugeYellow3Off = pygame.image.load("img/trio/yellow/off/gauge3.png")
+    gaugeYellow3Off = pygame.transform.scale(gaugeYellow3Off, (1920, 1080))
+    gaugeYellow4Off = pygame.image.load("img/trio/yellow/off/gauge4.png")
+    gaugeYellow4Off = pygame.transform.scale(gaugeYellow4Off, (1920, 1080))
+    gaugeYellow5Off = pygame.image.load("img/trio/yellow/off/gauge5.png")
+    gaugeYellow5Off = pygame.transform.scale(gaugeYellow5Off, (1920, 1080))
+    gaugeYellowList = [gaugeYellow1Off, gaugeYellow2Off, gaugeYellow3Off, gaugeYellow4Off, gaugeYellow5Off]
+
+    gaugePink1Off = pygame.image.load("img/trio/pink/off/gauge1.png")
+    gaugePink1Off = pygame.transform.scale(gaugePink1Off, (1920, 1080))
+    gaugePink2Off = pygame.image.load("img/trio/pink/off/gauge2.png")
+    gaugePink2Off = pygame.transform.scale(gaugePink2Off, (1920, 1080))
+    gaugePink3Off = pygame.image.load("img/trio/pink/off/gauge3.png")
+    gaugePink3Off = pygame.transform.scale(gaugePink3Off, (1920, 1080))
+    gaugePink4Off = pygame.image.load("img/trio/pink/off/gauge4.png")
+    gaugePink4Off = pygame.transform.scale(gaugePink4Off, (1920, 1080))
+    gaugePink5Off = pygame.image.load("img/trio/pink/off/gauge5.png")
+    gaugePink5Off = pygame.transform.scale(gaugePink5Off, (1920, 1080))
+    gaugePinkList = [gaugePink1Off, gaugePink2Off, gaugePink3Off, gaugePink4Off, gaugePink5Off]
+
+    gaugeList = [gaugeBlueList, gaugeYellowList, gaugePinkList]
+
+    blueRotate = pygame.image.load("img/rotating/blue-path.png")
+    blueRotate = pygame.transform.scale(blueRotate, (1920, 1080))
+    borderRotate = pygame.image.load("img/rotating/border.png")
+    borderRotate = pygame.transform.scale(borderRotate, (1920, 1080))
+    botDotRotate = pygame.image.load("img/rotating/bot-dot.png")
+    botDotRotate = pygame.transform.scale(botDotRotate, (1920, 1080))
+    duoPurpleRotate = pygame.image.load("img/rotating/duo-purple.png")
+    duoPurpleRotate = pygame.transform.scale(duoPurpleRotate, (1920, 1080))
+    tricolorRotate = pygame.image.load("img/rotating/tricolor-rotate.png")
+    tricolorRotate = pygame.transform.scale(tricolorRotate, (1920, 1080))
+    upDotRotate = pygame.image.load("img/rotating/up-dot.png")
+    upDotRotate = pygame.transform.scale(upDotRotate, (1920, 1080))
+    whiteRotate = pygame.image.load("img/rotating/white-circle.png")
+    whiteRotate = pygame.transform.scale(whiteRotate, (1920, 1080))
+    yellowCircleRotate = pygame.image.load("img/rotating/yellow-circle.png")
+    yellowCircleRotate = pygame.transform.scale(yellowCircleRotate, (1920, 1080))
+    yellowPathRotate = pygame.image.load("img/rotating/yellow-path.png")
+    yellowPathRotate = pygame.transform.scale(yellowPathRotate, (1920, 1080))
+
+    pressure1Arrow = pygame.image.load("img/pressure/pressure1/arrow.png")
+    pressure1Arrow = pygame.transform.scale(pressure1Arrow, (1920, 1080))
+    pressure1Circle = pygame.image.load("img/pressure/pressure1/circle.png")
+    pressure1Circle = pygame.transform.scale(pressure1Circle, (1920, 1080))
+    pressure1Press = pygame.image.load("img/pressure/pressure1/pressurizer.png")
+    pressure1Press = pygame.transform.scale(pressure1Press, (1920, 1080))
+    pressure1 = [pressure1Arrow, pressure1Circle, pressure1Press]
+
+    pressure2Arrow = pygame.image.load("img/pressure/pressure2/arrow.png")
+    pressure2Arrow = pygame.transform.scale(pressure2Arrow, (1920, 1080))
+    pressure2Circle = pygame.image.load("img/pressure/pressure2/circle.png")
+    pressure2Circle = pygame.transform.scale(pressure2Circle, (1920, 1080))
+    pressure2Press = pygame.image.load("img/pressure/pressure2/pressurizer.png")
+    pressure2Press = pygame.transform.scale(pressure2Press, (1920, 1080))
+    pressure2 = [pressure2Arrow, pressure2Circle, pressure2Press]
+
     while running and timer > 0:
         keys = pygame.key.get_pressed()
         pressedKeys = []
 
         SCREEN.blit(BG, next(offset))
-        SCREEN.blit(TIMERI, TIMERRECT)
-        SCREEN.blit(timerCircle, timerCircleRect)
-        SCREEN.blit(timerGlass, timerGlassRect)
-        SCREEN.blit(ballGauge.image, ballGauge.rect)
-        SCREEN.blit(userBall.image, userBall.rect)
-        SCREEN.blit(rotateButtonImg, rotateButtonRect)
+        SCREEN.blit(TIMERI, (0,0))
+        SCREEN.blit(timerCircle, (0,0))
+        SCREEN.blit(timerGlass, (0,0))
+        SCREEN.blit(reGauge, (0,0))
+        SCREEN.blit(reBall, userBall.rect)
         for text in timerTextSurface:
             SCREEN.blit(text, text.get_rect(center=(950,270)))
 
         for switch in switchList:
-            SCREEN.blit(switch.image, switch.rect)
+            SCREEN.blit(switch.image, (0,0))
 
         for led in ledList:
-            SCREEN.blit(led.image, led.rect)
+            SCREEN.blit(led.image, (0,0))
 
-        SCREEN.blit(light1Img, ballGauge.light1Rect)
-        SCREEN.blit(light2Img, ballGauge.light2Rect)
-        SCREEN.blit(light3Img, ballGauge.light3Rect)
-        SCREEN.blit(light4Img, ballGauge.light4Rect)
-        SCREEN.blit(light5Img, ballGauge.light5Rect)
+        SCREEN.blit(lockedBoxImg, (0,0))
+        SCREEN.blit(lockedBoxText, (0,0))
+
+        SCREEN.blit(mysteryOff, (0,0))
+
+        SCREEN.blit(trioGaugeBackGround, (0,0))
+        for list in gaugeList:
+            for gaugeEl in list:
+                SCREEN.blit(gaugeEl, (0,0))
+
+        SCREEN.blit(randomButton1, (0,0))
+        SCREEN.blit(randomButton2, (0,0))
+        SCREEN.blit(randomButton3, (0,0))
+
+        SCREEN.blit(blueRotate, (0,0))
+        SCREEN.blit(borderRotate, (0,0))
+        SCREEN.blit(botDotRotate, (0,0))
+        SCREEN.blit(duoPurpleRotate, (0,0))
+        SCREEN.blit(tricolorRotate, (0,0))
+        SCREEN.blit(upDotRotate, (0,0))
+        SCREEN.blit(whiteRotate, (0,0))
+        SCREEN.blit(yellowCircleRotate, (0,0))
+        SCREEN.blit(yellowPathRotate, (0,0))
+
+        for item in pressure1:
+            SCREEN.blit(item, (0,0))
+
+        for item in pressure2:
+            SCREEN.blit(item, (0,0))
+
+        if chosenLight == 1:
+            SCREEN.blit(light1Img, ballGauge.light1Rect)
+        elif chosenLight == 2:
+            SCREEN.blit(light2Img, ballGauge.light2Rect)
+        elif chosenLight == 3:
+            SCREEN.blit(light3Img, ballGauge.light3Rect)
+        elif chosenLight == 4:
+            SCREEN.blit(light4Img, ballGauge.light4Rect) 
+        else:
+            SCREEN.blit(light5Img, ballGauge.light5Rect)
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
         
@@ -221,50 +396,37 @@ def gameLoop():
 
         clock = pygame.time.Clock()
 
+        if solutionSwitch == switchListState:
+            running = False
+
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_u:
-                    if chosenSwitch == 1:
-                        switch2.image = pygame.transform.scale(switch2.image, (60, 120))
-                        switch2.rect = switch2.image.get_rect(center=(switch2.x, switch2.y))
-                        switch1.image = pygame.transform.scale(switch1.image, (40,100))
-                        switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
-                        chosenSwitch += 1
-                    elif chosenSwitch == 2:
-                        switch3.image = pygame.transform.scale(switch3.image, (60, 120))
-                        switch3.rect = switch3.image.get_rect(center=(switch3.x, switch3.y))
-                        switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-                        switch2.rect = switch2.image.get_rect(center=(switch2.x, switch2.y))
-                        chosenSwitch += 1
-                    elif chosenSwitch == 3:
-                        switch4.image = pygame.transform.scale(switch4.image, (60, 120))
-                        switch4.rect = switch4.image.get_rect(center=(switch4.x, switch4.y))
-                        switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-                        switch3.rect = switch3.image.get_rect(center=(switch3.x, switch3.y))
-                        chosenSwitch += 1
-                    elif chosenSwitch == 4:
-                        switch5.image = pygame.transform.scale(switch5.image, (60, 120))
-                        switch5.rect = switch5.image.get_rect(center=(switch5.x, switch5.y))
-                        switch4.image = pygame.transform.scale(switch4.image, (40,100))
-                        switch4.rect = switch4.image.get_rect(center=(switch4.x, switch4.y))
-                        chosenSwitch += 1
-                    elif chosenSwitch == 5:
-                        switch1.image = pygame.transform.scale(switch1.image, (60,120))
-                        switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
-                        switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-                        switch5.rect = switch5.image.get_rect(center=(switch5.x, switch5.y))
+                    if chosenSwitch == 5:
                         chosenSwitch = 1
+                    else:
+                        chosenSwitch += 1
                 if event.key == pygame.K_z:
                     if chosenSwitch == 1:
-                        switch1.switch(switchOn, switchOff)
+                        switchSE.play()
+                        switch1.switch(switch1On, switch1Off)
+                        switchListState[0] = switch1.state
                     elif chosenSwitch == 2:
-                        switch2.switch(switchOn, switchOff)
+                        switchSE.play()
+                        switch2.switch(switch2On, switch2Off)
+                        switchListState[1] = switch2.state
                     elif chosenSwitch == 3:
-                        switch3.switch(switchOn, switchOff)
+                        switchSE.play()
+                        switch3.switch(switch3On, switch3Off)
+                        switchListState[2] = switch3.state
                     elif chosenSwitch == 4:
-                        switch4.switch(switchOn, switchOff)
+                        switchSE.play()
+                        switch4.switch(switch4On, switch4Off)
+                        switchListState[3] = switch4.state
                     elif chosenSwitch == 5:
-                        switch5.switch(switchOn, switchOff)
+                        switchSE.play()
+                        switch5.switch(switch5On, switch5Off)
+                        switchListState[4] = switch5.state
                 if event.key == pygame.K_ESCAPE:
                     menuMusic.stop()
                     running = False
@@ -307,8 +469,9 @@ def gameLoop():
                 if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn >= 10:
                     if keys[pygame.K_m]:
                         if keys[pygame.K_q]:
+                            ledSE.play()
                             ledList[ledId].turnedOn = True
-                            ledList[ledId].image = ledOn
+                            ledList[ledId].turnOn()
                             ledId += 1
                             ledTimer = 100
 
@@ -336,7 +499,7 @@ def gameLoop():
                             elif chosenLight == 5:
                                 light5Img = ballGauge.lightImg
 
-                            offset = shake()
+                            #offset = shake()
                 elif ballGauge.rect.left+160 in range(userBall.rect.left, userBall.rect.right) or ballGauge.rect.right-130 in range(userBall.rect.left, userBall.rect.right):
                     if outTimer == 0:
                         lose = True
@@ -347,17 +510,6 @@ def gameLoop():
                     lose = True
                 noHoldTimer -= 1
 
-            if keys[pygame.K_TAB]:
-                if chosenSwitch == 1:
-                    switch1.switch(switchOn, switchOff)
-                elif chosenSwitch == 2:
-                    switch2.switch(switchOn, switchOff)
-                elif chosenSwitch == 3:
-                    switch3.switch(switchOn, switchOff)
-                elif chosenSwitch == 4:
-                    switch4.switch(switchOn, switchOff)
-                elif chosenSwitch == 5:
-                    switch5.switch(switchOn, switchOff)
 
         #timer -= 1
         ledTimer -= 1
