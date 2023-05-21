@@ -117,7 +117,9 @@ def gameLoop():
         if switch.state == "Off":
             switch.image = switchOff
 
-    chosenSwitch = 0
+    chosenSwitch = 1
+    switch1.image = pygame.transform.scale(switch1.image, (60, 120))
+    switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
 
     ledOn = pygame.image.load("img/ledon.png")
     ledOn = pygame.transform.scale(ledOn, (30,30))
@@ -133,10 +135,10 @@ def gameLoop():
     ledList = [led1, led2, led3, led4, led5]
 
     ledId = 0
-    ledTimer = 0
+    ledTimer = 50
 
-    startGame = [pygame.K_m, pygame.K_w]
-    startGameInv = [pygame.K_w, pygame.K_m]
+    startGame = [pygame.K_m, pygame.K_q]
+    startGameInv = [pygame.K_q, pygame.K_m]
 
     turn = 0
     gameStarted = False
@@ -221,6 +223,48 @@ def gameLoop():
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_u:
+                    if chosenSwitch == 1:
+                        switch2.image = pygame.transform.scale(switch2.image, (60, 120))
+                        switch2.rect = switch2.image.get_rect(center=(switch2.x, switch2.y))
+                        switch1.image = pygame.transform.scale(switch1.image, (40,100))
+                        switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
+                        chosenSwitch += 1
+                    elif chosenSwitch == 2:
+                        switch3.image = pygame.transform.scale(switch3.image, (60, 120))
+                        switch3.rect = switch3.image.get_rect(center=(switch3.x, switch3.y))
+                        switch2.image = pygame.transform.scale(switch2.image, (40, 100))
+                        switch2.rect = switch2.image.get_rect(center=(switch2.x, switch2.y))
+                        chosenSwitch += 1
+                    elif chosenSwitch == 3:
+                        switch4.image = pygame.transform.scale(switch4.image, (60, 120))
+                        switch4.rect = switch4.image.get_rect(center=(switch4.x, switch4.y))
+                        switch3.image = pygame.transform.scale(switch3.image, (40, 100))
+                        switch3.rect = switch3.image.get_rect(center=(switch3.x, switch3.y))
+                        chosenSwitch += 1
+                    elif chosenSwitch == 4:
+                        switch5.image = pygame.transform.scale(switch5.image, (60, 120))
+                        switch5.rect = switch5.image.get_rect(center=(switch5.x, switch5.y))
+                        switch4.image = pygame.transform.scale(switch4.image, (40,100))
+                        switch4.rect = switch4.image.get_rect(center=(switch4.x, switch4.y))
+                        chosenSwitch += 1
+                    elif chosenSwitch == 5:
+                        switch1.image = pygame.transform.scale(switch1.image, (60,120))
+                        switch1.rect = switch1.image.get_rect(center=(switch1.x, switch1.y))
+                        switch5.image = pygame.transform.scale(switch5.image, (40, 100))
+                        switch5.rect = switch5.image.get_rect(center=(switch5.x, switch5.y))
+                        chosenSwitch = 1
+                if event.key == pygame.K_z:
+                    if chosenSwitch == 1:
+                        switch1.switch(switchOn, switchOff)
+                    elif chosenSwitch == 2:
+                        switch2.switch(switchOn, switchOff)
+                    elif chosenSwitch == 3:
+                        switch3.switch(switchOn, switchOff)
+                    elif chosenSwitch == 4:
+                        switch4.switch(switchOn, switchOff)
+                    elif chosenSwitch == 5:
+                        switch5.switch(switchOn, switchOff)
                 if event.key == pygame.K_ESCAPE:
                     menuMusic.stop()
                     running = False
@@ -233,14 +277,10 @@ def gameLoop():
                 if event.key == pygame.K_i:
                     if rotateButtonImg == rotateButtonDown:
                         rotateButtonImg = rotateButtonUp
-                if event.key == pygame.K_m:
+                if event.key == pygame.K_m and turn == 0:
                     pressedKeys.append(pygame.K_m)
-                    if noHoldTimer != 3000:
-                        noHoldTimer = 3000  
-                if event.key == pygame.K_w:
-                    pressedKeys.append(pygame.K_w)
-                    if noHoldTimer != 3000:
-                        noHoldTimer = 3000
+                if event.key == pygame.K_q and turn == 0:
+                    pressedKeys.append(pygame.K_q)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print(MENU_MOUSE_POS)      
 
@@ -252,17 +292,21 @@ def gameLoop():
             if menuMusic.get_num_channels() == 0:
                 menuMusic.play(-1)
 
-            if keys[pygame.K_w]:
+            if keys[pygame.K_q]:
                 if userBall.x < ballGauge.rect.right-130:
                     userBall.move(1)
+                if noHoldTimer != 3000:
+                    noHoldTimer = 3000  
             if keys[pygame.K_m]:
                 if userBall.x > ballGauge.rect.left+160:
-                    userBall.move(2)   
+                    userBall.move(2)  
+                if noHoldTimer != 3000:
+                    noHoldTimer = 3000  
 
             for lightPos in ballGauge.lightPos:
                 if userBall.x in range(lightPos.left, lightPos.right) and ledId <= 4 and ledTimer <= 0 and turn >= 10:
                     if keys[pygame.K_m]:
-                        if keys[pygame.K_w]:
+                        if keys[pygame.K_q]:
                             ledList[ledId].turnedOn = True
                             ledList[ledId].image = ledOn
                             ledId += 1
@@ -293,71 +337,15 @@ def gameLoop():
                                 light5Img = ballGauge.lightImg
 
                             offset = shake()
-                elif userBall.x == ballGauge.rect.left or userBall.x == ballGauge.rect.right:
+                elif ballGauge.rect.left+160 in range(userBall.rect.left, userBall.rect.right) or ballGauge.rect.right-130 in range(userBall.rect.left, userBall.rect.right):
                     if outTimer == 0:
                         lose = True
                     outTimer -= 1
             
-            if turn >= 10 and (pygame.K_m not in keys and pygame.K_w not in keys):
+            if turn >= 10 and (pygame.K_m not in keys and pygame.K_q not in keys):
                 if noHoldTimer == 0:
                     lose = True
                 noHoldTimer -= 1
-
-            if keys[pygame.K_a]:
-                if chosenSwitch == 2:
-                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-                elif chosenSwitch == 3:
-                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-                elif chosenSwitch == 4:
-                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-                elif chosenSwitch == 5:
-                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-                chosenSwitch = 1
-                switch1.image = pygame.transform.scale(switch1.image, (60, 120))
-            if keys[pygame.K_z]:
-                if chosenSwitch == 1:
-                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-                elif chosenSwitch == 3:
-                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-                elif chosenSwitch == 4:
-                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-                elif chosenSwitch == 5:
-                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-                chosenSwitch = 2
-                switch2.image = pygame.transform.scale(switch2.image, (60, 120))
-            if keys[pygame.K_e]:
-                if chosenSwitch == 1:
-                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-                elif chosenSwitch == 2:
-                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-                elif chosenSwitch == 4:
-                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-                elif chosenSwitch == 5:
-                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-                chosenSwitch = 3
-                switch3.image = pygame.transform.scale(switch3.image, (60, 120)) 
-            if keys[pygame.K_r]:
-                if chosenSwitch == 1:
-                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-                elif chosenSwitch == 2:
-                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-                elif chosenSwitch == 3:
-                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-                elif chosenSwitch == 5:
-                    switch5.image = pygame.transform.scale(switch5.image, (40, 100))
-                chosenSwitch = 4
-                switch4.image = pygame.transform.scale(switch4.image, (60, 120))
-            if keys[pygame.K_t]:
-                if chosenSwitch == 1:
-                    switch1.image = pygame.transform.scale(switch1.image, (40, 100))
-                elif chosenSwitch == 2:
-                    switch2.image = pygame.transform.scale(switch2.image, (40, 100))
-                elif chosenSwitch == 3:
-                    switch3.image = pygame.transform.scale(switch3.image, (40, 100))
-                elif chosenSwitch == 4:
-                    switch4.image = pygame.transform.scale(switch4.image, (40, 100))
-                chosenSwitch = 5
-                switch5.image = pygame.transform.scale(switch5.image, (60, 120))
 
             if keys[pygame.K_TAB]:
                 if chosenSwitch == 1:
@@ -377,7 +365,7 @@ def gameLoop():
         if timer == 0:
             lose = True
 
-        elif userBall.x > ballGauge.rect.left and userBall.x < ballGauge.rect.right and outTimer != 3000:
+        elif ballGauge.rect.left+160 not in range(userBall.rect.left, userBall.rect.right) and ballGauge.rect.right-130 not in range(userBall.rect.left, userBall.rect.right) and outTimer != 3000:
             outTimer = 3000
 
         if turn != 0 and turn < 10:
